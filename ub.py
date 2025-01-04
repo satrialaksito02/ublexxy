@@ -325,43 +325,37 @@ async def restart_bot(event):
     # Use os.execv to restart the script with the correct Python 3 interpreter
     os.execv(python3_path, [python3_path] + sys.argv)
 
-@client.on(events.NewMessage(pattern=r"\.whitelist ([\d,-]+)"))
-async def whitelist_groups(event):
-    """Whitelist multiple groups by indices."""
-    indices = event.pattern_match.group(1)
-    try:
-        # Parsing input (e.g., "1,3-5" -> [1, 3, 4, 5])
-        indices = parse_indices(indices)
-        whitelisted_groups = []
-        
-        for index in sorted(indices, reverse=True):
-            if 0 <= index - 1 < len(group_ids):
-                whitelisted_groups.append(group_ids.pop(index - 1))
-        
-        global whitelist_groups
-        whitelist_groups += whitelisted_groups  # Perbaikan di sini
-        save_data()
-        save_whitelist()
-        
-        response = "\n".join([f"Whitelisted: {group['name']} (ID: {group['id']})" for group in whitelisted_groups])
-        await event.edit(f"Successfully whitelisted the following groups:\n{response}")
-    except Exception as e:
-        await event.edit(f"Error whitelisting groups: {e}")
-    print("Whitelisted multiple groups.")
-
-@client.on(events.NewMessage(pattern=r"\.restore"))
-async def restore_whitelist(event):
-    """Restore all whitelisted groups to the main group list."""
-    global group_ids, whitelist_groups  # Pastikan menggunakan variabel global
-    if whitelist_groups:
-        group_ids.extend(whitelist_groups)  # Tambahkan grup dari whitelist ke daftar utama
-        whitelist_groups.clear()  # Kosongkan whitelist setelah dipindahkan
-        save_data()
-        save_whitelist()
-        await event.edit("All whitelisted groups have been restored to the group list.")
+@client.on(events.NewMessage(pattern=r"\.whitelist (\d+)"))
+async def whitelist_group(event):
+    index = int(event.pattern_match.group(1)) - 1
+    if 0 <= index < len(group_ids):
+        group_id = group_ids.pop(index)
+        if group_id not in whitelist_groups:
+            whitelist_groups.append(group_id)
+            save_data()
+            save_whitelist()
+            await event.edit(f"Group ID {group_id} moved to whitelist.")
+            print(f"Group ID {group_id} moved to whitelist.")
+        else:
+            await event.edit("Group already in whitelist.")
     else:
-        await event.edit("No groups in the whitelist to restore.")
-    print("Restored all whitelisted groups.")
+        await event.edit("Invalid group index.")
+
+@client.on(events.NewMessage(pattern=r"\.restore (\d+)"))
+async def restore_group(event):
+    index = int(event.pattern_match.group(1)) - 1
+    if 0 <= index < len(whitelist_groups):
+        group_id = whitelist_groups.pop(index)
+        if group_id not in group_ids:
+            group_ids.append(group_id)
+            save_data()
+            save_whitelist()
+            await event.edit(f"Group ID {group_id} restored to main list.")
+            print(f"Group ID {group_id} restored to main list.")
+        else:
+            await event.edit("Group already in main list.")
+    else:
+        await event.edit("Invalid group index.")
 
 @client.on(events.NewMessage(pattern=r"\.whitelistlist"))
 async def view_whitelist(event):
