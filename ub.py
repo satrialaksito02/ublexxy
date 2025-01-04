@@ -32,6 +32,7 @@ forward_task = None
 
 # Load groups and messages from files
 def load_data():
+    """Load groups and messages from JSON files."""
     global group_ids, messages
     if os.path.exists(GROUPS_FILE):
         with open(GROUPS_FILE, "r") as f:
@@ -41,10 +42,11 @@ def load_data():
             messages = json.load(f)
 
 def save_data():
+    """Save groups and messages to JSON files."""
     with open(GROUPS_FILE, "w") as f:
-        json.dump(group_ids, f)
+        json.dump(group_ids, f, indent=4)  # Save with indentation for readability
     with open(MESSAGES_FILE, "w") as f:
-        json.dump(messages, f)
+        json.dump(messages, f, indent=4)
 
 # Load whitelist from file (optional)
 WHITELIST_FILE = "whitelist.json"
@@ -169,36 +171,35 @@ async def handle_add_message(event):
 
 @client.on(events.NewMessage(pattern=r"\.grup"))
 async def handle_list_group_ids(event):
-    """List saved groups from groups.json."""
+    """List saved groups with names and IDs from groups.json."""
     if group_ids:
-        response = "\n".join([f"{i + 1}. Group ID: {group_id}" for i, group_id in enumerate(group_ids)])
+        response = "\n".join([f"{i + 1}. {group['name']} (ID: {group['id']})" for i, group in enumerate(group_ids)])
         await event.edit(f"Groups in list:\n{response}")
     else:
         await event.edit("No groups found in the group list.")
-    print("Listed group IDs.")
+    print("Listed saved group names and IDs.")
 
 @client.on(events.NewMessage(pattern=r"\.grupall"))
 async def handle_list_all_groups(event):
-    """List all groups from Telegram account and update groups.json."""
+    """List all groups and save their names and IDs to groups.json."""
     global group_ids
     group_ids = []  # Clear existing list
 
     async for dialog in client.iter_dialogs():
         if dialog.is_group:  # Check if it's a group
-            if dialog.id not in group_ids:
-                group_ids.append(dialog.id)
+            group_entry = {"id": dialog.id, "name": dialog.title}
+            if group_entry not in group_ids:
+                group_ids.append(group_entry)
 
     # Save updated group list
     save_data()
 
     if group_ids:
-        response = "\n".join([f"{i + 1}. {dialog.title} (ID: {dialog.id})"
-                              for i, dialog in enumerate(await client.get_dialogs())
-                              if dialog.is_group and dialog.id in group_ids])
+        response = "\n".join([f"{i + 1}. {group['name']} (ID: {group['id']})" for i, group in enumerate(group_ids)])
         await event.edit(f"All Groups (Updated List):\n{response}")
     else:
         await event.edit("No groups found on this account.")
-    print("Listed all groups.")
+    print("Listed all groups with names.")
 
 @client.on(events.NewMessage(pattern=r"\.pesan"))
 async def handle_list_messages(event):
@@ -295,6 +296,58 @@ async def restart_bot(event):
 
     # Use os.execv to restart the script with the correct Python 3 interpreter
     os.execv(python3_path, [python3_path] + sys.argv)
+
+@client.on(events.NewMessage(pattern=r"\.daftar"))
+async def list_events(event):
+    commands = [
+        "**Menambahkan group dengan ID** -> `.addgroupid <group_id>`\n"
+        "Digunakan untuk menambahkan grup ke dalam daftar grup berdasarkan ID grup.",
+
+        "**Menambahkan group dengan nama** -> `.addgroup <group_name>`\n"
+        "Menambahkan grup ke dalam daftar dengan mencocokkan nama grup di akun Telegram.",
+
+        "**Menghapus grup berdasarkan nomor urut** -> `.hapus <nomor>`\n"
+        "Menghapus grup dari daftar berdasarkan urutan dalam daftar grup.",
+
+        "**Menambahkan pesan baru** -> `.tambahpesan` (reply pesan)\n"
+        "Menambahkan pesan baru ke dalam daftar pesan. Gunakan perintah ini dengan me-reply pesan yang ingin ditambahkan.",
+
+        "**Melihat daftar grup** -> `.grup`\n"
+        "Menampilkan semua grup yang ada di daftar grup saat ini.",
+
+        "**Melihat daftar pesan** -> `.pesan`\n"
+        "Menampilkan semua pesan yang tersimpan di daftar pesan.",
+
+        "**Memilih pesan untuk dikirim** -> `.selectmessage <nomor>`\n"
+        "Memilih pesan berdasarkan nomor urut di daftar pesan untuk digunakan saat pengiriman otomatis.",
+
+        "**Memulai pengiriman pesan otomatis** -> `.start`\n"
+        "Memulai pengiriman pesan otomatis ke grup yang ada di daftar grup.",
+
+        "**Menghentikan pengiriman pesan otomatis** -> `.stop`\n"
+        "Menghentikan proses pengiriman pesan otomatis yang sedang berjalan.",
+
+        "**Forward satu kali** -> `.forwardonce` (reply pesan)\n"
+        "Memforward pesan ke semua grup di daftar grup sekali saja. Gunakan dengan me-reply pesan yang ingin diforward.",
+
+        "**Forward otomatis** -> `.autoforward` (reply pesan)\n"
+        "Memulai forward pesan otomatis ke semua grup di daftar grup. Gunakan dengan me-reply pesan yang ingin diforward.",
+
+        "**Menghentikan forward otomatis** -> `.stopforward`\n"
+        "Menghentikan forward pesan otomatis yang sedang berjalan.",
+
+        "**Whitelist grup** -> `.whitelist <nomor>`\n"
+        "Memindahkan grup tertentu dari daftar grup ke daftar whitelist.",
+
+        "**Restore grup** -> `.restore <nomor>`\n"
+        "Mengembalikan grup dari whitelist ke daftar grup utama.",
+
+        "**Restart bot** -> `.restart`\n"
+        "Merestart bot untuk menerapkan perubahan atau mengatasi masalah."
+    ]
+
+    response = "**Daftar Perintah dan Penjelasannya**:\n\n" + "\n\n".join(commands)
+    await event.edit(response)
     
 # Main Function
 async def main():
