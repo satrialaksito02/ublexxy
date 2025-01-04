@@ -36,7 +36,14 @@ def load_data():
     global group_ids, messages
     if os.path.exists(GROUPS_FILE):
         with open(GROUPS_FILE, "r") as f:
-            group_ids = json.load(f)
+            data = json.load(f)
+            # Konversi elemen `id` saja ke format lengkap
+            group_ids = [
+                {"id": group["id"], "name": group.get("name", f"Unknown Group {group['id']}")}
+                if isinstance(group, dict)
+                else {"id": group, "name": f"Unknown Group {group}"}
+                for group in data
+            ]
     if os.path.exists(MESSAGES_FILE):
         with open(MESSAGES_FILE, "r") as f:
             messages = json.load(f)
@@ -138,29 +145,42 @@ async def auto_forward_message(reply_message):
 @client.on(events.NewMessage(pattern=r"\.addgroupid (\d+)"))
 async def handle_add_group(event):
     group_id = int(event.pattern_match.group(1))
-    if group_id not in group_ids:
-        group_ids.append(group_id)
-        save_data()
-        await event.edit(f"Group ID {group_id} added.")
-    else:
-        await event.edit("Group ID already exists.")
+    try:
+        # Ambil informasi nama grup berdasarkan ID
+        group_entity = await client.get_entity(group_id)
+        group_name = group_entity.title
+
+        # Tambahkan grup ke daftar jika belum ada
+        if not any(group['id'] == group_id for group in group_ids):
+            group_ids.append({"id": group_id, "name": group_name})
+            save_data()
+            await event.edit(f"Group {group_name} (ID: {group_id}) added.")
+            print(f"Group {group_name} (ID: {group_id}) added.")
+        else:
+            await event.edit("Group ID already exists in the list.")
+    except Exception as e:
+        await event.edit(f"Failed to add group: {e}")
     print(f"Group ID handled: {group_id}")
 
 @client.on(events.NewMessage(pattern=r"\.addgroup (.+)"))
 async def add_group_by_name(event):
     group_name = event.pattern_match.group(1)
-    async for dialog in client.iter_dialogs():
-        if dialog.is_group and dialog.title == group_name:
-            if dialog.id not in group_ids:
-                group_ids.append(dialog.id)
-                save_data()
-                await event.edit(f"Group {group_name} (ID: {dialog.id}) added.")
-                print(f"Group {group_name} (ID: {dialog.id}) added.")
-                return
-            else:
-                await event.edit("Group already exists in the list.")
-                return
-    await event.edit("Group not found.")
+    try:
+        async for dialog in client.iter_dialogs():
+            if dialog.is_group and dialog.title == group_name:
+                if not any(group['id'] == dialog.id for group in group_ids):
+                    group_ids.append({"id": dialog.id, "name": dialog.title})
+                    save_data()
+                    await event.edit(f"Group {group_name} (ID: {dialog.id}) added.")
+                    print(f"Group {group_name} (ID: {dialog.id}) added.")
+                    return
+                else:
+                    await event.edit("Group already exists in the list.")
+                    return
+        await event.edit("Group not found.")
+    except Exception as e:
+        await event.edit(f"Failed to add group: {e}")
+    print(f"Group added by name: {group_name}")
 
 @client.on(events.NewMessage(pattern=r"\.hapus ([\d,-]+)"))
 async def delete_groups(event):
