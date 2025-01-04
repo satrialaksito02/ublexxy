@@ -288,6 +288,10 @@ async def restart_bot(event):
     # Log restart to a file
     with open("restart_log.txt", "a") as log_file:
         log_file.write("Restarting bot...\n")
+    print(f"Python executable: {sys.executable}")
+    if not os.path.exists(sys.executable):
+        await event.edit(f"Python executable not found: {sys.executable}")
+        return
     os.execv(sys.executable, ['python'] + sys.argv)
     
 # Main Function
