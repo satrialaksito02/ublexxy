@@ -280,38 +280,6 @@ async def stop_auto_forward(event):
         await event.edit("Auto-forwarding process stopped.")
     else:
         await event.edit("No active auto-forwarding process.")
-        
-@client.on(events.NewMessage(pattern=r"\.whitelist (\d+)"))
-async def whitelist_group(event):
-    index = int(event.pattern_match.group(1)) - 1
-    if 0 <= index < len(group_ids):
-        group_id = group_ids.pop(index)
-        if group_id not in whitelist_groups:
-            whitelist_groups.append(group_id)
-            save_data()
-            save_whitelist()
-            await event.edit(f"Group ID {group_id} moved to whitelist.")
-            print(f"Group ID {group_id} moved to whitelist.")
-        else:
-            await event.edit("Group already in whitelist.")
-    else:
-        await event.edit("Invalid group index.")
-
-@client.on(events.NewMessage(pattern=r"\.restore (\d+)"))
-async def restore_group(event):
-    index = int(event.pattern_match.group(1)) - 1
-    if 0 <= index < len(whitelist_groups):
-        group_id = whitelist_groups.pop(index)
-        if group_id not in group_ids:
-            group_ids.append(group_id)
-            save_data()
-            save_whitelist()
-            await event.edit(f"Group ID {group_id} restored to main list.")
-            print(f"Group ID {group_id} restored to main list.")
-        else:
-            await event.edit("Group already in main list.")
-    else:
-        await event.edit("Invalid group index.")
 
 @client.on(events.NewMessage(pattern=r"\.restart"))
 async def restart_bot(event):
