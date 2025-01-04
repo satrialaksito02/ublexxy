@@ -55,8 +55,14 @@ if os.path.exists(WHITELIST_FILE):
         whitelist_groups = json.load(f)
 
 def save_whitelist():
+    """Save whitelist groups to JSON file."""
+    global whitelist_groups
     with open(WHITELIST_FILE, "w") as f:
-        json.dump(whitelist_groups, f)
+        json.dump(whitelist_groups, f, indent=4)
+
+if os.path.exists(WHITELIST_FILE):
+    with open(WHITELIST_FILE, "r") as f:
+        whitelist_groups = json.load(f)
 
 # Fungsi Utility: parse_indices
 def parse_indices(indices):
@@ -332,7 +338,8 @@ async def whitelist_groups(event):
             if 0 <= index - 1 < len(group_ids):
                 whitelisted_groups.append(group_ids.pop(index - 1))
         
-        whitelist_groups.extend(whitelisted_groups)
+        global whitelist_groups
+        whitelist_groups += whitelisted_groups  # Perbaikan di sini
         save_data()
         save_whitelist()
         
@@ -355,9 +362,10 @@ async def restore_whitelist(event):
         await event.edit("No groups in the whitelist to restore.")
     print("Restored all whitelisted groups.")
 
-@client.on(events.NewMessage(pattern=r"\.seewl"))
+@client.on(events.NewMessage(pattern=r"\.whitelistlist"))
 async def view_whitelist(event):
     """List all groups in the whitelist."""
+    global whitelist_groups
     if whitelist_groups:
         response = "\n".join([f"{i + 1}. {group['name']} (ID: {group['id']})" for i, group in enumerate(whitelist_groups)])
         await event.edit(f"Whitelisted Groups:\n{response}")
