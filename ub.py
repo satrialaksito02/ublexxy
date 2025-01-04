@@ -58,6 +58,19 @@ def save_whitelist():
     with open(WHITELIST_FILE, "w") as f:
         json.dump(whitelist_groups, f)
 
+# Fungsi Utility: parse_indices
+def parse_indices(indices):
+    """Parse a string of indices (e.g., "1,3-5") into a list of integers."""
+    result = []
+    parts = indices.split(",")
+    for part in parts:
+        if "-" in part:
+            start, end = map(int, part.split("-"))
+            result.extend(range(start, end + 1))
+        else:
+            result.append(int(part))
+    return sorted(set(result))
+
 # Initialize data
 load_data()
 
@@ -143,16 +156,25 @@ async def add_group_by_name(event):
                 return
     await event.edit("Group not found.")
 
-@client.on(events.NewMessage(pattern=r"\.hapus (\d+)"))
-async def delete_group(event):
-    index = int(event.pattern_match.group(1)) - 1
-    if 0 <= index < len(group_ids):
-        removed_group = group_ids.pop(index)
+@client.on(events.NewMessage(pattern=r"\.hapus ([\d,-]+)"))
+async def delete_groups(event):
+    """Delete multiple groups by indices."""
+    indices = event.pattern_match.group(1)
+    try:
+        # Parsing input (e.g., "1,3-5" -> [1, 3, 4, 5])
+        indices = parse_indices(indices)
+        removed_groups = []
+        
+        for index in sorted(indices, reverse=True):
+            if 0 <= index - 1 < len(group_ids):
+                removed_groups.append(group_ids.pop(index - 1))
+        
         save_data()
-        await event.edit(f"Group ID {removed_group} removed.")
-        print(f"Group ID {removed_group} removed.")
-    else:
-        await event.edit("Invalid group index.")
+        response = "\n".join([f"Removed: {group['name']} (ID: {group['id']})" for group in removed_groups])
+        await event.edit(f"Successfully removed the following groups:\n{response}")
+    except Exception as e:
+        await event.edit(f"Error removing groups: {e}")
+    print("Deleted multiple groups.")
 
 @client.on(events.NewMessage(pattern=r"\.tambahpesan"))
 async def handle_add_message(event):
@@ -296,6 +318,52 @@ async def restart_bot(event):
 
     # Use os.execv to restart the script with the correct Python 3 interpreter
     os.execv(python3_path, [python3_path] + sys.argv)
+
+@client.on(events.NewMessage(pattern=r"\.whitelist ([\d,-]+)"))
+async def whitelist_groups(event):
+    """Whitelist multiple groups by indices."""
+    indices = event.pattern_match.group(1)
+    try:
+        # Parsing input (e.g., "1,3-5" -> [1, 3, 4, 5])
+        indices = parse_indices(indices)
+        whitelisted_groups = []
+        
+        for index in sorted(indices, reverse=True):
+            if 0 <= index - 1 < len(group_ids):
+                whitelisted_groups.append(group_ids.pop(index - 1))
+        
+        whitelist_groups.extend(whitelisted_groups)
+        save_data()
+        save_whitelist()
+        
+        response = "\n".join([f"Whitelisted: {group['name']} (ID: {group['id']})" for group in whitelisted_groups])
+        await event.edit(f"Successfully whitelisted the following groups:\n{response}")
+    except Exception as e:
+        await event.edit(f"Error whitelisting groups: {e}")
+    print("Whitelisted multiple groups.")
+
+@client.on(events.NewMessage(pattern=r"\.restore"))
+async def restore_whitelist(event):
+    """Restore all whitelisted groups to the main group list."""
+    if whitelist_groups:
+        group_ids.extend(whitelist_groups)
+        whitelist_groups.clear()
+        save_data()
+        save_whitelist()
+        await event.edit("All whitelisted groups have been restored to the group list.")
+    else:
+        await event.edit("No groups in the whitelist to restore.")
+    print("Restored all whitelisted groups.")
+
+@client.on(events.NewMessage(pattern=r"\.seewl"))
+async def view_whitelist(event):
+    """List all groups in the whitelist."""
+    if whitelist_groups:
+        response = "\n".join([f"{i + 1}. {group['name']} (ID: {group['id']})" for i, group in enumerate(whitelist_groups)])
+        await event.edit(f"Whitelisted Groups:\n{response}")
+    else:
+        await event.edit("No groups in the whitelist.")
+    print("Listed all whitelisted groups.")
 
 @client.on(events.NewMessage(pattern=r"\.daftar"))
 async def list_events(event):
