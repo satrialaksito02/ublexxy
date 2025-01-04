@@ -285,14 +285,17 @@ async def stop_auto_forward(event):
 async def restart_bot(event):
     await event.edit("Restarting bot...")
     print("Restarting bot...")
+
     # Log restart to a file
     with open("restart_log.txt", "a") as log_file:
         log_file.write("Restarting bot...\n")
-    print(f"Python executable: {sys.executable}")
-    if not os.path.exists(sys.executable):
-        await event.edit(f"Python executable not found: {sys.executable}")
-        return
-    os.execv(sys.executable, ['python'] + sys.argv)
+    
+    # Specify the full path for python3 on Ubuntu
+    python3_path = "/usr/bin/python3"  # Adjust if necessary
+
+    # Use os.execv to restart the script with the correct Python 3 interpreter
+    os.execv(python3_path, [python3_path] + sys.argv)
+
     
 # Main Function
 async def main():
