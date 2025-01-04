@@ -19,6 +19,7 @@ BREAK_DELAY = 7200  # 2 hours
 GROUPS_FILE = "groups.json"
 MESSAGES_FILE = "messages.json"
 
+
 client = TelegramClient("userbot_session", API_ID, API_HASH)
 
 # Load group IDs and messages
@@ -346,7 +347,7 @@ async def restart_bot(event):
     os.execv(python3_path, [python3_path] + sys.argv)
 
 @client.on(events.NewMessage(pattern=r"\.whitelist ([\d,-]+)"))
-async def whitelist_groups(event):
+async def whitelisting_groups(event):
     """Whitelist multiple groups by indices."""
     indices = event.pattern_match.group(1)
     try:
