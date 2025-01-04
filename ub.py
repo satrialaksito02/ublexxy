@@ -169,32 +169,32 @@ async def handle_add_message(event):
 
 @client.on(events.NewMessage(pattern=r"\.grup"))
 async def handle_list_group_ids(event):
+    """List saved groups from groups.json."""
     if group_ids:
-        # Ambil semua dialog dan filter hanya grup yang ada di group_ids
-        dialogs = await client.get_dialogs()
-        response = "\n".join([f"{i + 1}. {dialog.title} (ID: {dialog.id})" for i, dialog in enumerate(dialogs) if dialog.is_group and dialog.id in group_ids])
-        await event.edit(f"Group IDs (List):\n{response}")
+        response = "\n".join([f"{i + 1}. Group ID: {group_id}" for i, group_id in enumerate(group_ids)])
+        await event.edit(f"Groups in list:\n{response}")
     else:
         await event.edit("No groups found in the group list.")
     print("Listed group IDs.")
 
 @client.on(events.NewMessage(pattern=r"\.grupall"))
 async def handle_list_all_groups(event):
+    """List all groups from Telegram account and update groups.json."""
     global group_ids
-    group_ids = []  # Clear the existing list
+    group_ids = []  # Clear existing list
 
-    # Fetch all dialogs and filter only group chats
     async for dialog in client.iter_dialogs():
-        if dialog.is_group:  # Check if the dialog is a group
-            group_ids.append(dialog.id)
+        if dialog.is_group:  # Check if it's a group
+            if dialog.id not in group_ids:
+                group_ids.append(dialog.id)
 
     # Save updated group list
     save_data()
 
     if group_ids:
-        # Ambil semua dialog dan filter hanya grup
-        dialogs = await client.get_dialogs()
-        response = "\n".join([f"{i + 1}. {dialog.title} (ID: {dialog.id})" for i, dialog in enumerate(dialogs) if dialog.is_group])
+        response = "\n".join([f"{i + 1}. {dialog.title} (ID: {dialog.id})"
+                              for i, dialog in enumerate(await client.get_dialogs())
+                              if dialog.is_group and dialog.id in group_ids])
         await event.edit(f"All Groups (Updated List):\n{response}")
     else:
         await event.edit("No groups found on this account.")
@@ -295,7 +295,6 @@ async def restart_bot(event):
 
     # Use os.execv to restart the script with the correct Python 3 interpreter
     os.execv(python3_path, [python3_path] + sys.argv)
-
     
 # Main Function
 async def main():
