@@ -290,58 +290,6 @@ async def restart_bot(event):
         log_file.write("Restarting bot...\n")
     os.execv(sys.executable, ['python'] + sys.argv)
     
-@client.on(events.NewMessage(pattern=r"\.daftar"))
-async def list_events(event):
-    commands = [
-        "**Menambahkan group dengan ID** -> `.addgroupid <group_id>`\n"
-        "Digunakan untuk menambahkan grup ke dalam daftar grup berdasarkan ID grup.",
-
-        "**Menambahkan group dengan nama** -> `.addgroup <group_name>`\n"
-        "Menambahkan grup ke dalam daftar dengan mencocokkan nama grup di akun Telegram.",
-
-        "**Menghapus grup berdasarkan nomor urut** -> `.hapus <nomor>`\n"
-        "Menghapus grup dari daftar berdasarkan urutan dalam daftar grup.",
-
-        "**Menambahkan pesan baru** -> `.tambahpesan` (reply pesan)\n"
-        "Menambahkan pesan baru ke dalam daftar pesan. Gunakan perintah ini dengan me-reply pesan yang ingin ditambahkan.",
-
-        "**Melihat daftar grup** -> `.grup`\n"
-        "Menampilkan semua grup yang ada di daftar grup saat ini.",
-
-        "**Melihat daftar pesan** -> `.pesan`\n"
-        "Menampilkan semua pesan yang tersimpan di daftar pesan.",
-
-        "**Memilih pesan untuk dikirim** -> `.selectmessage <nomor>`\n"
-        "Memilih pesan berdasarkan nomor urut di daftar pesan untuk digunakan saat pengiriman otomatis.",
-
-        "**Memulai pengiriman pesan otomatis** -> `.start`\n"
-        "Memulai pengiriman pesan otomatis ke grup yang ada di daftar grup.",
-
-        "**Menghentikan pengiriman pesan otomatis** -> `.stop`\n"
-        "Menghentikan proses pengiriman pesan otomatis yang sedang berjalan.",
-
-        "**Forward satu kali** -> `.forwardonce` (reply pesan)\n"
-        "Memforward pesan ke semua grup di daftar grup sekali saja. Gunakan dengan me-reply pesan yang ingin diforward.",
-
-        "**Forward otomatis** -> `.autoforward` (reply pesan)\n"
-        "Memulai forward pesan otomatis ke semua grup di daftar grup. Gunakan dengan me-reply pesan yang ingin diforward.",
-
-        "**Menghentikan forward otomatis** -> `.stopforward`\n"
-        "Menghentikan forward pesan otomatis yang sedang berjalan.",
-
-        "**Whitelist grup** -> `.whitelist <nomor>`\n"
-        "Memindahkan grup tertentu dari daftar grup ke daftar whitelist.",
-
-        "**Restore grup** -> `.restore <nomor>`\n"
-        "Mengembalikan grup dari whitelist ke daftar grup utama.",
-
-        "**Restart bot** -> `.restart`\n"
-        "Merestart bot untuk menerapkan perubahan atau mengatasi masalah."
-    ]
-
-    response = "**Daftar Perintah dan Penjelasannya**:\n\n" + "\n\n".join(commands)
-    await event.edit(response)
-
 # Main Function
 async def main():
     if not await client.is_user_authorized():
