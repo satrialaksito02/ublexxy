@@ -352,9 +352,10 @@ async def whitelist_groups(event):
 @client.on(events.NewMessage(pattern=r"\.restore"))
 async def restore_whitelist(event):
     """Restore all whitelisted groups to the main group list."""
+    global group_ids, whitelist_groups  # Pastikan menggunakan variabel global
     if whitelist_groups:
-        group_ids.extend(whitelist_groups)
-        whitelist_groups.clear()
+        group_ids.extend(whitelist_groups)  # Tambahkan grup dari whitelist ke daftar utama
+        whitelist_groups.clear()  # Kosongkan whitelist setelah dipindahkan
         save_data()
         save_whitelist()
         await event.edit("All whitelisted groups have been restored to the group list.")
