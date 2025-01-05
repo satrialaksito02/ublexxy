@@ -25,12 +25,19 @@ MESSAGES_FILE = "messages.json"
 
 client = TelegramClient("userbot_session", API_ID, API_HASH)
 
-# Setup Logging
+# Ensure the 'logs/' directory exists
+log_dir = os.path.join(os.path.dirname(__file__), "logs")
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+
+# Configure Logging
 logging.basicConfig(
-    filename="logs/userbot.log",
+    filename=os.path.join(log_dir, "userbot.log"),
     format="%(asctime)s - %(levelname)s - %(message)s",
     level=logging.INFO,
 )
+
+logging.info("Userbot started successfully!")
 
 # Example Logging for Events
 def log_event(action, group_name=None, extra=None):
