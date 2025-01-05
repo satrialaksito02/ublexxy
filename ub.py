@@ -3,6 +3,9 @@ import json
 import asyncio
 import random
 import sys
+import logging
+import random
+import time
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 from telethon.errors import SessionPasswordNeededError
@@ -21,6 +24,22 @@ MESSAGES_FILE = "messages.json"
 
 
 client = TelegramClient("userbot_session", API_ID, API_HASH)
+
+# Setup Logging
+logging.basicConfig(
+    filename="logs/userbot.log",
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+)
+
+# Example Logging for Events
+def log_event(action, group_name=None, extra=None):
+    if group_name:
+        logging.info(f"{action} | Group: {group_name} | Details: {extra}")
+        print(f"[{action}] Group: {group_name} | {extra}")
+    else:
+        logging.info(f"{action} | {extra}")
+        print(f"[{action}] {extra}")
 
 # Load group IDs and messages
 group_ids = []
@@ -473,6 +492,15 @@ async def main():
             password = input("Enter your 2FA password: ")
             await client.sign_in(password=password)
     print("Logged in successfully.")
+    print("""
+██╗   ██╗███████╗███████╗██████╗ ██████╗  ██████╗ ████████╗
+██║   ██║██╔════╝██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝
+██║   ██║███████╗█████╗  ██████╔╝██████╔╝██║   ██║   ██║   
+██║   ██║╚════██║██╔══╝  ██╔══██╗██╔══██╗██║   ██║   ██║   
+╚██████╔╝███████║███████╗██║  ██║██████╔╝╚██████╔╝   ██║   
+ ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═════╝  ╚═════╝    ╚═╝   
+                                                           """)
+    print("Created By: https://t.me/laksitoadi02")
     
     # Dapatkan ID pengguna Anda
     me = await client.get_me()
