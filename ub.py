@@ -10,6 +10,7 @@ import coloredlogs
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 from telethon.errors import SessionPasswordNeededError
+from datetime import datetime
 
 # Load environment variables
 load_dotenv()
@@ -28,31 +29,48 @@ log_dir = os.path.join(os.path.dirname(__file__), "logs")
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 
-# Configure Logging
-log_formatter = "%(asctime)s - %(levelname)s - %(message)s"
-logging.basicConfig(
-    filename=os.path.join(log_dir, "userbot.log"),
-    format=log_formatter,
-    level=logging.INFO,  # Set level to INFO to ignore DEBUG logs
+# Configure Logging with Colors
+log_format = "%(asctime)s [%(levelname)s] %(message)s"
+coloredlogs.install(
+    fmt=log_format,
+    level='INFO',
+    level_styles={
+        'info': {'color': 'cyan'},
+        'debug': {'color': 'green'},
+        'warning': {'color': 'yellow'},
+        'error': {'color': 'red', 'bold': True}
+    },
 )
 
-logging.info("Userbot started successfully!")
+# Helper Function to Log Events with Format
+def log_event(event_type, details, group_name=None, group_id=None):
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    colors = {
+        "MSG": "\033[94m",    # Blue
+        "FWD": "\033[96m",    # Cyan
+        "DELAY": "\033[92m",  # Green
+        "BREAK": "\033[91m",  # Red
+    }
+    reset_color = "\033[0m"
 
-# Set Telethon logger to WARNING to suppress DEBUG logs
-telethon_logger = logging.getLogger("telethon")
-telethon_logger.setLevel(logging.WARNING)
-
-# Add colored logs for console
-coloredlogs.install(fmt=log_formatter, level='INFO')  # Set level to INFO for console as well
-
-logging.info("User bot started successfully!")
-
-# Example Logging for Events
-def log_event(action, group_name=None, extra=None):
-    if group_name:
-        logging.info(f"{action} | Group: {group_name} | Details: {extra}")
+    if event_type == "MSG":
+        message = f"{colors['MSG']}[{current_time}] [MSG] - Pesan dikirimkan ke {group_name} - {group_id}{reset_color}"
+    elif event_type == "FWD":
+        message = f"{colors['FWD']}[{current_time}] [FWD] - Pesan diteruskan ke {group_name} - {group_id}{reset_color}"
+    elif event_type == "DELAY":
+        message = f"{colors['DELAY']}[{current_time}] [DELAY] - Pesan dijeda selama {details} detik{reset_color}"
+    elif event_type == "BREAK":
+        message = f"{colors['BREAK']}[{current_time}] [BREAK] - Pesan ditunda selama {details} jam hingga pengiriman selanjutnya{reset_color}"
     else:
-        logging.info(f"{action} | {extra}")
+        message = f"[{current_time}] [UNKNOWN] - {details}"
+
+    logging.info(message)
+
+# Contoh penggunaan fungsi log_event
+log_event("MSG", None, group_name="My Group", group_id=12345)
+log_event("FWD", None, group_name="My Group", group_id=12345)
+log_event("DELAY", "30")
+log_event("BREAK", "2")
 
 client = TelegramClient("userbot_session", API_ID, API_HASH)
 
@@ -140,14 +158,13 @@ async def send_messages():
                 log_event(f"Sending to group {group_id}: {selected_message}")
                 peer = await client.get_entity(group_id['id']) 
                 await client.send_message(peer, selected_message, parse_mode='HTML')
-                log_event("Message sent", group_id['name'], f"Message: {selected_message}")
+                log_event("MSG", None, group_name=group_id['name'], group_id=group_id['id'])
             except Exception as e:
                 log_event("Error sending message", group_id['name'], str(e))
             delay = random.randint(DELAY_MIN, DELAY_MAX)
-            log_event(f"Waiting {delay} seconds before sending the next message...")
-            logging.info(f"Waiting {delay} seconds before sending the next message...")
+            log_event("DELAY", delay)
             await asyncio.sleep(delay)
-        log_event(f"Session complete. Waiting {BREAK_DELAY // 60} minutes before the next session...")
+        log_event("BREAK", BREAK_DELAY // 3600)  # Jam
         await asyncio.sleep(BREAK_DELAY)
 
 async def forward_message_once(reply_message):
@@ -156,11 +173,11 @@ async def forward_message_once(reply_message):
         try:
             peer = await client.get_entity(group_id['id'])
             await client.forward_messages(peer, reply_message)
-            log_event("Message forwarded", group_id['name'], f"Forwarded message ID: {reply_message.id}")
+            log_event("FWD", None, group_name=group_id['name'], group_id=group_id['id'])
         except Exception as e:
             log_event("Error forwarding message", group_id['name'], str(e))
         delay = random.randint(DELAY_MIN, DELAY_MAX)
-        log_event(f"Waiting {delay} seconds before sending the next message...")
+        log_event("DELAY", delay)
         await asyncio.sleep(delay)
 
 async def auto_forward_message(reply_message):
@@ -171,13 +188,13 @@ async def auto_forward_message(reply_message):
             try:
                 peer = await client.get_entity(group_id['id'])
                 await client.forward_messages(peer, reply_message)
-                log_event(f"Forwarded to {group_id}")
+                log_event("FWD", None, group_name=group_id['name'], group_id=group_id['id'])
             except Exception as e:
                 log_event(f"Failed to forward to {group_id}: {e}")
             delay = random.randint(DELAY_MIN, DELAY_MAX)
-            log_event(f"Waiting {delay} seconds before sending the next message...")
+            log_event("DELAY", delay)
             await asyncio.sleep(delay)
-        log_event(f"Auto-forward session complete. Waiting {BREAK_DELAY // 60} minutes before next session...")
+        log_event("BREAK", BREAK_DELAY // 3600)  # Jam
         await asyncio.sleep(BREAK_DELAY)
 
 # Event Handlers
