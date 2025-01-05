@@ -51,10 +51,8 @@ logging.info("User bot started successfully!")
 def log_event(action, group_name=None, extra=None):
     if group_name:
         logging.info(f"{action} | Group: {group_name} | Details: {extra}")
-        print(f"[{action}] Group: {group_name} | {extra}")
     else:
         logging.info(f"{action} | {extra}")
-        print(f"[{action}] {extra}")
 
 client = TelegramClient("userbot_session", API_ID, API_HASH)
 
@@ -134,20 +132,22 @@ async def send_messages():
         return "No group IDs available. Add a group first."
 
     selected_message = messages[selected_message_index]
-    print(f"Using selected message: {selected_message}")
+    log_event(f"Using selected message: {selected_message}")
     while True:
-        print("Starting a new sending session...")
+        log_event("Starting a new sending session...")
         for group_id in group_ids:
             try:
-                print(f"Sending to group {group_id}: {selected_message}")
+                log_event(f"Sending to group {group_id}: {selected_message}")
                 peer = await client.get_entity(group_id['id']) 
                 await client.send_message(peer, selected_message, parse_mode='HTML')
                 log_event("Message sent", group_id['name'], f"Message: {selected_message}")
+            except Exception as e:
+                log_event("Error sending message", group_id['name'], str(e))
             delay = random.randint(DELAY_MIN, DELAY_MAX)
-            print(f"Waiting {delay} seconds before sending the next message...")
+            log_event(f"Waiting {delay} seconds before sending the next message...")
             logging.info(f"Waiting {delay} seconds before sending the next message...")
             await asyncio.sleep(delay)
-        print(f"Session complete. Waiting {BREAK_DELAY // 60} minutes before the next session...")
+        log_event(f"Session complete. Waiting {BREAK_DELAY // 60} minutes before the next session...")
         await asyncio.sleep(BREAK_DELAY)
 
 async def forward_message_once(reply_message):
@@ -157,23 +157,27 @@ async def forward_message_once(reply_message):
             peer = await client.get_entity(group_id['id'])
             await client.forward_messages(peer, reply_message)
             log_event("Message forwarded", group_id['name'], f"Forwarded message ID: {reply_message.id}")
+        except Exception as e:
+            log_event("Error forwarding message", group_id['name'], str(e))
         delay = random.randint(DELAY_MIN, DELAY_MAX)
-        print(f"Waiting {delay} seconds before sending the next message...")
+        log_event(f"Waiting {delay} seconds before sending the next message...")
         await asyncio.sleep(delay)
 
 async def auto_forward_message(reply_message):
     """Continuously forward a message with delay."""
     while True:
-        print("Starting auto-forward session...")
+        log_event("Starting auto-forward session...")
         for group_id in group_ids:
             try:
                 peer = await client.get_entity(group_id['id'])
                 await client.forward_messages(peer, reply_message)
-                print(f"Forwarded to {group_id}")
+                log_event(f"Forwarded to {group_id}")
+            except Exception as e:
+                log_event(f"Failed to forward to {group_id}: {e}")
             delay = random.randint(DELAY_MIN, DELAY_MAX)
-            print(f"Waiting {delay} seconds before sending the next message...")
+            log_event(f"Waiting {delay} seconds before sending the next message...")
             await asyncio.sleep(delay)
-        print(f"Auto-forward session complete. Waiting {BREAK_DELAY // 60} minutes before next session...")
+        log_event(f"Auto-forward session complete. Waiting {BREAK_DELAY // 60} minutes before next session...")
         await asyncio.sleep(BREAK_DELAY)
 
 # Event Handlers
