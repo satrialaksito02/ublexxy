@@ -6,6 +6,7 @@ import sys
 import logging
 import random
 import time
+import coloredlogs
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
 from telethon.errors import SessionPasswordNeededError
@@ -22,20 +23,23 @@ BREAK_DELAY = 7200  # 2 hours
 GROUPS_FILE = "groups.json"
 MESSAGES_FILE = "messages.json"
 
-
-client = TelegramClient("userbot_session", API_ID, API_HASH)
-
 # Ensure the 'logs/' directory exists
 log_dir = os.path.join(os.path.dirname(__file__), "logs")
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 
 # Configure Logging
+log_formatter = "%(asctime)s - %(levelname)s - %(message)s"
 logging.basicConfig(
     filename=os.path.join(log_dir, "userbot.log"),
-    format="%(asctime)s - %(levelname)s - %(message)s",
+    format=log_formatter,
     level=logging.INFO,
 )
+
+logging.info("Userbot started successfully!")
+
+# Add colored logs for console
+coloredlogs.install(fmt=log_formatter, level='DEBUG')
 
 logging.info("Userbot started successfully!")
 
@@ -47,6 +51,8 @@ def log_event(action, group_name=None, extra=None):
     else:
         logging.info(f"{action} | {extra}")
         print(f"[{action}] {extra}")
+
+client = TelegramClient("userbot_session", API_ID, API_HASH)
 
 # Load group IDs and messages
 group_ids = []
@@ -114,6 +120,7 @@ def parse_indices(indices):
 # Initialize data
 load_data()
 
+
 # Helper Functions
 async def send_messages():
     """Send the selected message to all group IDs with delay."""
@@ -129,7 +136,7 @@ async def send_messages():
         for group_id in group_ids:
             try:
                 print(f"Sending to group {group_id}: {selected_message}")
-                peer = await client.get_entity(group_id)
+                peer = await client.get_entity(group_id['id']) 
                 await client.send_message(peer, selected_message, parse_mode='HTML')
             except Exception as e:
                 print(f"Failed to send message to {group_id}: {e}")
@@ -143,7 +150,7 @@ async def forward_message_once(reply_message):
     """Forward a message once to all groups."""
     for group_id in group_ids:
         try:
-            peer = await client.get_entity(group_id)
+            peer = await client.get_entity(group_id['id'])
             await client.forward_messages(peer, reply_message)
             print(f"Forwarded to {group_id}")
         except Exception as e:
@@ -157,7 +164,7 @@ async def auto_forward_message(reply_message):
         print("Starting auto-forward session...")
         for group_id in group_ids:
             try:
-                peer = await client.get_entity(group_id)
+                peer = await client.get_entity(group_id['id'])
                 await client.forward_messages(peer, reply_message)
                 print(f"Forwarded to {group_id}")
             except Exception as e:
