@@ -142,8 +142,11 @@ async def send_messages():
                 print(f"Sending to group {group_id}: {selected_message}")
                 peer = await client.get_entity(group_id['id']) 
                 await client.send_message(peer, selected_message, parse_mode='HTML')
+                log_event("Message sent", group_id['name'], f"Message: {selected_message}")
             except Exception as e:
+                log_event("Error sending message", group_id['name'], str(e))
             delay = random.randint(DELAY_MIN, DELAY_MAX)
+            print(f"Waiting {delay} seconds before sending the next message...")
             logging.info(f"Waiting {delay} seconds before sending the next message...")
             await asyncio.sleep(delay)
         print(f"Session complete. Waiting {BREAK_DELAY // 60} minutes before the next session...")
@@ -155,8 +158,11 @@ async def forward_message_once(reply_message):
         try:
             peer = await client.get_entity(group_id['id'])
             await client.forward_messages(peer, reply_message)
+            log_event("Message forwarded", group_id['name'], f"Forwarded message ID: {reply_message.id}")
         except Exception as e:
+            log_event("Error forwarding message", group_id['name'], str(e))
         delay = random.randint(DELAY_MIN, DELAY_MAX)
+        print(f"Waiting {delay} seconds before sending the next message...")
         await asyncio.sleep(delay)
 
 async def auto_forward_message(reply_message):
@@ -167,12 +173,13 @@ async def auto_forward_message(reply_message):
             try:
                 peer = await client.get_entity(group_id['id'])
                 await client.forward_messages(peer, reply_message)
-                plog_event("Message sent", group_id['name'], f"Message: {selected_message}")
+                print(f"Forwarded to {group_id}")
             except Exception as e:
+                log_event("Error forwarding message", group_id['name'], str(e))
             delay = random.randint(DELAY_MIN, DELAY_MAX)
-            logging.info(f"Waiting {delay} seconds before sending the next message...")
+            print(f"Waiting {delay} seconds before sending the next message...")
             await asyncio.sleep(delay)
-        print(f"Session complete. Waiting {BREAK_DELAY // 60} minutes before the next session...")
+        print(f"Auto-forward session complete. Waiting {BREAK_DELAY // 60} minutes before next session...")
         await asyncio.sleep(BREAK_DELAY)
 
 # Event Handlers
