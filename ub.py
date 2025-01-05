@@ -29,40 +29,29 @@ log_dir = os.path.join(os.path.dirname(__file__), "logs")
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 
-# Configure Logging with Colors
-log_format = "%(asctime)s [%(levelname)s] %(message)s"
-coloredlogs.install(
-    fmt=log_format,
-    level='INFO',
-    level_styles={
-        'info': {'color': 'cyan'},
-        'debug': {'color': 'green'},
-        'warning': {'color': 'yellow'},
-        'error': {'color': 'red', 'bold': True}
-    },
+# Configure Logging without Colors
+log_format = "%(asctime)s - %(message)s"
+logging.basicConfig(
+    level=logging.INFO,
+    format=log_format,
+    handlers=[
+        logging.FileHandler(os.path.join(log_dir, "app.log")),
+        logging.StreamHandler()
+    ],
 )
 
 # Helper Function to Log Events with Format
-def log_event(event_type, details, group_name=None, group_id=None):
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    colors = {
-        "MSG": "\033[94m",    # Blue
-        "FWD": "\033[96m",    # Cyan
-        "DELAY": "\033[92m",  # Green
-        "BREAK": "\033[91m",  # Red
-    }
-    reset_color = "\033[0m"
-
+def log_event(event_type, details=None, group_name=None, group_id=None):
     if event_type == "MSG":
-        message = f"{colors['MSG']}[{current_time}] [MSG] - Pesan dikirimkan ke {group_name} - {group_id}{reset_color}"
+        message = f"[MSG] - Pesan dikirimkan ke {group_name} - {group_id}"
     elif event_type == "FWD":
-        message = f"{colors['FWD']}[{current_time}] [FWD] - Pesan diteruskan ke {group_name} - {group_id}{reset_color}"
+        message = f"[FWD] - Pesan diteruskan ke {group_name} - {group_id}"
     elif event_type == "DELAY":
-        message = f"{colors['DELAY']}[{current_time}] [DELAY] - Pesan dijeda selama {details} detik{reset_color}"
+        message = f"[DELAY] - Pesan dijeda selama {details} detik"
     elif event_type == "BREAK":
-        message = f"{colors['BREAK']}[{current_time}] [BREAK] - Pesan ditunda selama {details} jam hingga pengiriman selanjutnya{reset_color}"
+        message = f"[BREAK] - Pesan ditunda selama {details} jam hingga pengiriman selanjutnya"
     else:
-        message = f"[{current_time}] [UNKNOWN] - {details}"
+        message = f"[UNKNOWN] - {details}"
 
     logging.info(message)
 
