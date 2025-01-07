@@ -19,7 +19,7 @@ API_HASH = os.getenv("API_HASH")
 PHONE = os.getenv("PHONE")
 DELAY_MIN = 30
 DELAY_MAX = 60
-BREAK_DELAY = 7200  # 2 hours
+BREAK_DELAY = 10800  # 2 hours
 
 GROUPS_FILE = "groups.json"
 MESSAGES_FILE = "messages.json"
