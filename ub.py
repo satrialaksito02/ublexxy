@@ -513,7 +513,7 @@ async def list_events(event):
         "<b>Restart bot</b> -> <code>.restart</code>\n"
         "Merestart bot untuk menerapkan perubahan atau mengatasi masalah.",
 
-        "<b>Status</b> -> .status<code>\n"
+        "<b>Status</b> -> <code>.status</code>\n"
         "Mengetahui Status terkini dari bot",
 
         "<blockquote>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙂𝙍𝙐𝙋</blockquote>\n"
