@@ -64,6 +64,14 @@ log_event("FWD", None, group_name="My Group", group_id=12345)
 log_event("DELAY", "30")
 log_event("BREAK", "2")
 
+# Logging helper function
+def log_action(action, details, status="INFO"):
+    """Log actions with colored tags."""
+    colors = {"INFO": "\033[94m", "SUCCESS": "\033[92m", "ERROR": "\033[91m"}
+    color = colors.get(status, "\033[94m")
+    header = f"{color}[{status} - USERBOT]\033[0m - {time.strftime('%Y-%m-%d %H:%M:%S')} - {action}"
+    print(f"{header} - {details}")
+
 client = TelegramClient("userbot_session", API_ID, API_HASH)
 
 # Load group IDs and messages
