@@ -19,10 +19,13 @@ API_HASH = os.getenv("API_HASH")
 PHONE = os.getenv("PHONE")
 DELAY_MIN = 30
 DELAY_MAX = 60
-BREAK_DELAY = 10800  # 2 hours
+BREAK_DELAY = 10800  # 3 hours
 
 GROUPS_FILE = "groups.json"
 MESSAGES_FILE = "messages.json"
+
+# For uptime tracking
+START_TIME = time.time()
 
 # Ensure the 'logs/' directory exists
 log_dir = os.path.join(os.path.dirname(__file__), "logs")
@@ -126,9 +129,36 @@ def parse_indices(indices):
             result.append(int(part))
     return sorted(set(result))
 
+# Set Break Delay
+def jeda_sesi (hours):
+    """Set break delay by converting hours to seconds."""
+    global BREAK_DELAY
+    try:
+        BREAK_DELAY = int(hours) * 3600
+        log_action("BREAK DELAY UPDATED", f"New Break Delay: {BREAK_DELAY} seconds", "SUCCESS")
+        return f"Break delay updated successfully to {hours} hour(s) ({BREAK_DELAY} seconds)."
+    except ValueError:
+        log_action("INVALID INPUT", "Failed to update break delay.", "ERROR")
+        return "Error: Please enter a valid number for hours."
+
+# View Bot Status
+def get_uptime():
+    """Calculate the bot's uptime."""
+    uptime_seconds = int(time.time() - START_TIME)
+    hours, remainder = divmod(uptime_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f"{hours}h {minutes}m {seconds}s"
+
+def get_status():
+    """Get bot status (online) and uptime."""
+    status = "ONLINE"
+    uptime = get_uptime()
+    log_action("STATUS CHECK", f"Status: {status}, Uptime: {uptime}", "INFO")
+    return f"Userbot is currently {status}.\nUptime: {uptime}."
+
+
 # Initialize data
 load_data()
-
 
 # Helper Functions
 async def send_messages():
@@ -453,6 +483,19 @@ async def view_whitelist(event):
     else:
         await event.edit("No groups in the whitelist.")
     print("Listed all whitelisted groups.")
+
+@client.on(events.NewMessage(pattern=r'^/jeda_sesi (\d+)$'))
+async def modify_break_delay(event):
+    """Handle setting the break delay."""
+    hours = event.pattern_match.group(1)
+    response = set_break_delay(hours)
+    await event.reply(response)
+
+@client.on(events.NewMessage(pattern=r'^/status$'))
+async def view_status(event):
+    """Handle viewing the bot's status."""
+    response = get_status()
+    await event.reply(response)
 
 @client.on(events.NewMessage(pattern=r"\.daftar"))
 async def list_events(event):
