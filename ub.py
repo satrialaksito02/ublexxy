@@ -510,62 +510,62 @@ async def list_events(event):
     commands = [
         
         "<blockquote>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝘿𝘼𝙎𝘼𝙍</blockquote>\n"
-        "<b>Restart bot</b> -> `.restart`\n"
+        "<b>Restart bot</b> -> <code>.restart</code>\n"
         "Merestart bot untuk menerapkan perubahan atau mengatasi masalah.",
 
-        "<b>Status</b> -> `.status`\n"
+        "<b>Status</b> -> .status<code>\n"
         "Mengetahui Status terkini dari bot",
 
         "<blockquote>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙂𝙍𝙐𝙋</blockquote>\n"
-        "<b>Melihat daftar grup</b> -> `.grup`\n"
+        "<b>Melihat daftar grup</b> -> <code>.grup</code>\n"
         "Menampilkan semua grup yang ada di daftar grup saat ini.",
 
-        "<b>Menambahkan group dengan ID</b> -> `.addgroupid <group_id>`\n"
+        "<b>Menambahkan group dengan ID</b> -> <code>.addgroupid <group_id></code>\n"
         "Digunakan untuk menambahkan grup ke dalam daftar grup berdasarkan ID grup.",
 
-        "<b>Menambahkan group dengan nama</b> -> `.addgroup <group_name>`\n"
+        "<b>Menambahkan group dengan nama</b> -> <code>.addgroup <group_name></code>\n"
         "Menambahkan grup ke dalam daftar dengan mencocokkan nama grup di akun Telegram.",
 
-        "<b>Whitelist grup</b> -> `.whitelist <nomor>`\n"
+        "<b>Whitelist grup</b> -> <code>.whitelist <nomor></code>\n"
         "Memindahkan grup tertentu dari daftar grup ke daftar whitelist.",
 
-        "<b>Restore grup</b> -> `.restore <nomor>`\n"
+        "<b>Restore grup</b> -> <code>.restore <nomor></code>\n"
         "Mengembalikan grup dari whitelist ke daftar grup utama.",
 
-        "<b>Melihat whitelist grup</b> -> `.whitelistlist`\n"
+        "<b>Melihat whitelist grup</b> -> <code>.whitelistlist</code>\n"
         "Melihat isi whitelist.",
 
-        "<b>Menghapus grup berdasarkan nomor urut</b> -> `.hapus <nomor>`\n"
+        "<b>Menghapus grup berdasarkan nomor urut</b> -> <code>.hapus <nomor></code>\n"
         "Menghapus grup dari daftar berdasarkan urutan dalam daftar grup.",
 
         "<blockquote>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙋𝙀𝙎𝘼𝙉</blockquote>\n"
-        "<b>Menambahkan pesan baru</b> -> `.tambahpesan` (reply pesan)\n"
+        "<b>Menambahkan pesan baru</b> -> <code>.tambahpesan</code> (reply pesan)\n"
         "Menambahkan pesan baru ke dalam daftar pesan. Gunakan perintah ini dengan me-reply pesan yang ingin ditambahkan.",
 
-        "<b>Melihat daftar pesan</b> -> `.pesan`\n"
+        "<b>Melihat daftar pesan</b> -> <code>.pesan</code>\n"
         "Menampilkan semua pesan yang tersimpan di daftar pesan.",
 
-        "<b>Memilih pesan untuk dikirim</b> -> `.selectmessage <nomor>`\n"
+        "<b>Memilih pesan untuk dikirim</b> -> <code>.selectmessage <nomor></code>\n"
         "Memilih pesan berdasarkan nomor urut di daftar pesan untuk digunakan saat pengiriman otomatis.",
 
         "<blockquote>𝙋𝙀𝙉𝙂𝙄𝙍𝙄𝙈𝘼𝙉 𝙋𝙀𝙎𝘼𝙉</blockquote>\n"
-        "<b>Memulai pengiriman pesan otomatis</b> -> `.start`\n"
+        "<b>Memulai pengiriman pesan otomatis</b> -> <code>.start</code>\n"
         "Memulai pengiriman pesan otomatis ke grup yang ada di daftar grup.",
 
-        "<b>Menghentikan pengiriman pesan otomatis</b> -> `.stop`\n"
+        "<b>Menghentikan pengiriman pesan otomatis</b> -> <code>.stop</code>\n"
         "Menghentikan proses pengiriman pesan otomatis yang sedang berjalan.",
 
-        "<b>Forward satu kali</b> -> `.forwardonce` (reply pesan)\n"
+        "<b>Forward satu kali</b> -> <code>.forwardonce</code> (reply pesan)\n"
         "Memforward pesan ke semua grup di daftar grup sekali saja. Gunakan dengan me-reply pesan yang ingin diforward.",
 
-        "<b>Forward otomatis</b> -> `.autoforward` (reply pesan)\n"
+        "<b>Forward otomatis</b> -> <code>.autoforward</code> (reply pesan)\n"
         "Memulai forward pesan otomatis ke semua grup di daftar grup. Gunakan dengan me-reply pesan yang ingin diforward.",
 
-        "<b>Menghentikan forward otomatis</b> -> `.stopforward`\n"
+        "<b>Menghentikan forward otomatis</b> -> <code>.stopforward</code>\n"
         "Menghentikan forward pesan otomatis yang sedang berjalan.",
 
-        "<b>Set Break Time</b> -> `.jeda_sesi`\n"
-        "Mengatur jeda <b>break time</b>"
+        "<b>Set Break Time</b> -> <code>.jeda_sesi</code>\n"
+        "Mengatur jeda <i>break time</i>"
     ]
 
     response = """
