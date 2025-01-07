@@ -509,67 +509,75 @@ async def view_status(event):
 async def list_events(event):
     commands = [
         
-        ">> 𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝘿𝘼𝙎𝘼𝙍 \n"
-        "**Restart bot** -> `.restart`\n"
+        "<blockquote>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝘿𝘼𝙎𝘼𝙍</blockquote>\n"
+        "<b>Restart bot</b> -> `.restart`\n"
         "Merestart bot untuk menerapkan perubahan atau mengatasi masalah.",
 
-        "**Status** -> `.status`\n"
+        "<b>Status</b> -> `.status`\n"
         "Mengetahui Status terkini dari bot",
 
-        ">> 𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙂𝙍𝙐𝙋 \n"
-        "**Melihat daftar grup** -> `.grup`\n"
+        "<blockquote>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙂𝙍𝙐𝙋</blockquote>\n"
+        "<b>Melihat daftar grup</b> -> `.grup`\n"
         "Menampilkan semua grup yang ada di daftar grup saat ini.",
 
-        "**Menambahkan group dengan ID** -> `.addgroupid <group_id>`\n"
+        "<b>Menambahkan group dengan ID</b> -> `.addgroupid <group_id>`\n"
         "Digunakan untuk menambahkan grup ke dalam daftar grup berdasarkan ID grup.",
 
-        "**Menambahkan group dengan nama** -> `.addgroup <group_name>`\n"
+        "<b>Menambahkan group dengan nama</b> -> `.addgroup <group_name>`\n"
         "Menambahkan grup ke dalam daftar dengan mencocokkan nama grup di akun Telegram.",
 
-        "**Whitelist grup** -> `.whitelist <nomor>`\n"
+        "<b>Whitelist grup</b> -> `.whitelist <nomor>`\n"
         "Memindahkan grup tertentu dari daftar grup ke daftar whitelist.",
 
-        "**Restore grup** -> `.restore <nomor>`\n"
+        "<b>Restore grup</b> -> `.restore <nomor>`\n"
         "Mengembalikan grup dari whitelist ke daftar grup utama.",
 
-        "**Melihat whitelist grup** -> `.whitelistlist`\n"
+        "<b>Melihat whitelist grup</b> -> `.whitelistlist`\n"
         "Melihat isi whitelist.",
 
-        "**Menghapus grup berdasarkan nomor urut** -> `.hapus <nomor>`\n"
+        "<b>Menghapus grup berdasarkan nomor urut</b> -> `.hapus <nomor>`\n"
         "Menghapus grup dari daftar berdasarkan urutan dalam daftar grup.",
 
-        ">> 𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙋𝙀𝙎𝘼𝙉 \n"
-        "**Menambahkan pesan baru** -> `.tambahpesan` (reply pesan)\n"
+        "<blockquote>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙋𝙀𝙎𝘼𝙉</blockquote>\n"
+        "<b>Menambahkan pesan baru</b> -> `.tambahpesan` (reply pesan)\n"
         "Menambahkan pesan baru ke dalam daftar pesan. Gunakan perintah ini dengan me-reply pesan yang ingin ditambahkan.",
 
-        "**Melihat daftar pesan** -> `.pesan`\n"
+        "<b>Melihat daftar pesan</b> -> `.pesan`\n"
         "Menampilkan semua pesan yang tersimpan di daftar pesan.",
 
-        "**Memilih pesan untuk dikirim** -> `.selectmessage <nomor>`\n"
+        "<b>Memilih pesan untuk dikirim</b> -> `.selectmessage <nomor>`\n"
         "Memilih pesan berdasarkan nomor urut di daftar pesan untuk digunakan saat pengiriman otomatis.",
 
-        ">> 𝙋𝙀𝙉𝙂𝙄𝙍𝙄𝙈𝘼𝙉 𝙋𝙀𝙎𝘼𝙉 \n"
-        "**Memulai pengiriman pesan otomatis** -> `.start`\n"
+        "<blockquote>𝙋𝙀𝙉𝙂𝙄𝙍𝙄𝙈𝘼𝙉 𝙋𝙀𝙎𝘼𝙉</blockquote>\n"
+        "<b>Memulai pengiriman pesan otomatis</b> -> `.start`\n"
         "Memulai pengiriman pesan otomatis ke grup yang ada di daftar grup.",
 
-        "**Menghentikan pengiriman pesan otomatis** -> `.stop`\n"
+        "<b>Menghentikan pengiriman pesan otomatis</b> -> `.stop`\n"
         "Menghentikan proses pengiriman pesan otomatis yang sedang berjalan.",
 
-        "**Forward satu kali** -> `.forwardonce` (reply pesan)\n"
+        "<b>Forward satu kali</b> -> `.forwardonce` (reply pesan)\n"
         "Memforward pesan ke semua grup di daftar grup sekali saja. Gunakan dengan me-reply pesan yang ingin diforward.",
 
-        "**Forward otomatis** -> `.autoforward` (reply pesan)\n"
+        "<b>Forward otomatis</b> -> `.autoforward` (reply pesan)\n"
         "Memulai forward pesan otomatis ke semua grup di daftar grup. Gunakan dengan me-reply pesan yang ingin diforward.",
 
-        "**Menghentikan forward otomatis** -> `.stopforward`\n"
+        "<b>Menghentikan forward otomatis</b> -> `.stopforward`\n"
         "Menghentikan forward pesan otomatis yang sedang berjalan.",
 
-        "**Set Break Time** -> `.jeda_sesi \n"
-        "Mengatur jeda __break time__"
+        "<b>Set Break Time</b> -> `.jeda_sesi`\n"
+        "Mengatur jeda <b>break time</b>"
     ]
 
-    response = "𝑷𝑬𝑹𝑰𝑵𝑻𝑨𝑯 𝑫𝑰 𝑮𝑹𝑼𝑷:\n\n" + "\n\n".join(commands)
+    response = """
+██╗   ██╗███████╗███████╗██████╗ ██████╗  ██████╗ ████████╗
+██║   ██║██╔════╝██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝
+██║   ██║███████╗█████╗  ██████╔╝██████╔╝██║   ██║   ██║   
+██║   ██║╚════██║██╔══╝  ██╔══██╗██╔══██╗██║   ██║   ██║   
+╚██████╔╝███████║███████╗██║  ██║██████╔╝╚██████╔╝   ██║   
+ ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═════╝  ╚═════╝    ╚═╝   
+                                                           \n\n""" + "\n\n".join(commands)
     await event.edit(response)
+
     
 # Main Function
 async def main():
