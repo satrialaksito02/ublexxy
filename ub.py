@@ -492,14 +492,14 @@ async def view_whitelist(event):
         await event.edit("No groups in the whitelist.")
     print("Listed all whitelisted groups.")
 
-@client.on(events.NewMessage(pattern=r'^/jeda_sesi (\d+)$'))
+@client.on(events.NewMessage(pattern=r"\.jeda_sesi (\d+)"))
 async def modify_break_delay(event):
     """Handle setting the break delay."""
     hours = event.pattern_match.group(1)
     response = jeda_sesi(hours)
     await event.reply(response)
 
-@client.on(events.NewMessage(pattern=r'^/status$'))
+@client.on(events.NewMessage(pattern=r"\.status$"))
 async def view_status(event):
     """Handle viewing the bot's status."""
     response = get_status()
