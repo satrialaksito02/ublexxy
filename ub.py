@@ -497,31 +497,50 @@ async def modify_break_delay(event):
     """Handle setting the break delay."""
     hours = event.pattern_match.group(1)
     response = jeda_sesi(hours)
-    await event.reply(response)
+    await event.edit(response)
 
 @client.on(events.NewMessage(pattern=r"\.status$"))
 async def view_status(event):
     """Handle viewing the bot's status."""
     response = get_status()
-    await event.reply(response)
+    await event.edit(response)
 
 @client.on(events.NewMessage(pattern=r"\.daftar"))
 async def list_events(event):
     commands = [
+        
+        ">>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝘿𝘼𝙎𝘼𝙍 \n"
+        "**Restart bot** -> `.restart`\n"
+        "Merestart bot untuk menerapkan perubahan atau mengatasi masalah.",
+
+        "**Status** -> `.status`\n"
+        "Mengetahui Status terkini dari bot",
+
+        ">>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙂𝙍𝙐𝙋 \n"
+        "**Melihat daftar grup** -> `.grup`\n"
+        "Menampilkan semua grup yang ada di daftar grup saat ini.",
+
         "**Menambahkan group dengan ID** -> `.addgroupid <group_id>`\n"
         "Digunakan untuk menambahkan grup ke dalam daftar grup berdasarkan ID grup.",
 
         "**Menambahkan group dengan nama** -> `.addgroup <group_name>`\n"
         "Menambahkan grup ke dalam daftar dengan mencocokkan nama grup di akun Telegram.",
 
+        "**Whitelist grup** -> `.whitelist <nomor>`\n"
+        "Memindahkan grup tertentu dari daftar grup ke daftar whitelist.",
+
+        "**Restore grup** -> `.restore <nomor>`\n"
+        "Mengembalikan grup dari whitelist ke daftar grup utama.",
+
+        "**Melihat whitelist grup** -> `.whitelistlist`\n"
+        "Melihat isi whitelist.",
+
         "**Menghapus grup berdasarkan nomor urut** -> `.hapus <nomor>`\n"
         "Menghapus grup dari daftar berdasarkan urutan dalam daftar grup.",
 
+        ">>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙋𝙀𝙎𝘼𝙉 \n"
         "**Menambahkan pesan baru** -> `.tambahpesan` (reply pesan)\n"
         "Menambahkan pesan baru ke dalam daftar pesan. Gunakan perintah ini dengan me-reply pesan yang ingin ditambahkan.",
-
-        "**Melihat daftar grup** -> `.grup`\n"
-        "Menampilkan semua grup yang ada di daftar grup saat ini.",
 
         "**Melihat daftar pesan** -> `.pesan`\n"
         "Menampilkan semua pesan yang tersimpan di daftar pesan.",
@@ -529,6 +548,7 @@ async def list_events(event):
         "**Memilih pesan untuk dikirim** -> `.selectmessage <nomor>`\n"
         "Memilih pesan berdasarkan nomor urut di daftar pesan untuk digunakan saat pengiriman otomatis.",
 
+        ">>𝙋𝙀𝙉𝙂𝙄𝙍𝙄𝙈𝘼𝙉 𝙋𝙀𝙎𝘼𝙉 \n"
         "**Memulai pengiriman pesan otomatis** -> `.start`\n"
         "Memulai pengiriman pesan otomatis ke grup yang ada di daftar grup.",
 
@@ -544,17 +564,11 @@ async def list_events(event):
         "**Menghentikan forward otomatis** -> `.stopforward`\n"
         "Menghentikan forward pesan otomatis yang sedang berjalan.",
 
-        "**Whitelist grup** -> `.whitelist <nomor>`\n"
-        "Memindahkan grup tertentu dari daftar grup ke daftar whitelist.",
-
-        "**Restore grup** -> `.restore <nomor>`\n"
-        "Mengembalikan grup dari whitelist ke daftar grup utama.",
-
-        "**Restart bot** -> `.restart`\n"
-        "Merestart bot untuk menerapkan perubahan atau mengatasi masalah."
+        "**Set Break Time** -> `.jeda_sesi \n"
+        "Mengatur jeda __break time__"
     ]
 
-    response = "**Daftar Perintah dan Penjelasannya**:\n\n" + "\n\n".join(commands)
+    response = "𝑷𝑬𝑹𝑰𝑵𝑻𝑨𝑯 𝑫𝑰 𝑮𝑹𝑼𝑷:\n\n" + "\n\n".join(commands)
     await event.edit(response)
     
 # Main Function
