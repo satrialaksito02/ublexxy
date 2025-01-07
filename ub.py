@@ -496,7 +496,7 @@ async def view_whitelist(event):
 async def modify_break_delay(event):
     """Handle setting the break delay."""
     hours = event.pattern_match.group(1)
-    response = set_break_delay(hours)
+    response = jeda_sesi(hours)
     await event.reply(response)
 
 @client.on(events.NewMessage(pattern=r'^/status$'))
