@@ -509,14 +509,14 @@ async def view_status(event):
 async def list_events(event):
     commands = [
         
-        ">>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝘿𝘼𝙎𝘼𝙍 \n"
+        ">> 𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝘿𝘼𝙎𝘼𝙍 \n"
         "**Restart bot** -> `.restart`\n"
         "Merestart bot untuk menerapkan perubahan atau mengatasi masalah.",
 
         "**Status** -> `.status`\n"
         "Mengetahui Status terkini dari bot",
 
-        ">>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙂𝙍𝙐𝙋 \n"
+        ">> 𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙂𝙍𝙐𝙋 \n"
         "**Melihat daftar grup** -> `.grup`\n"
         "Menampilkan semua grup yang ada di daftar grup saat ini.",
 
@@ -538,7 +538,7 @@ async def list_events(event):
         "**Menghapus grup berdasarkan nomor urut** -> `.hapus <nomor>`\n"
         "Menghapus grup dari daftar berdasarkan urutan dalam daftar grup.",
 
-        ">>𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙋𝙀𝙎𝘼𝙉 \n"
+        ">> 𝙋𝙀𝙍𝙄𝙉𝙏𝘼𝙃 𝙋𝙀𝙎𝘼𝙉 \n"
         "**Menambahkan pesan baru** -> `.tambahpesan` (reply pesan)\n"
         "Menambahkan pesan baru ke dalam daftar pesan. Gunakan perintah ini dengan me-reply pesan yang ingin ditambahkan.",
 
@@ -548,7 +548,7 @@ async def list_events(event):
         "**Memilih pesan untuk dikirim** -> `.selectmessage <nomor>`\n"
         "Memilih pesan berdasarkan nomor urut di daftar pesan untuk digunakan saat pengiriman otomatis.",
 
-        ">>𝙋𝙀𝙉𝙂𝙄𝙍𝙄𝙈𝘼𝙉 𝙋𝙀𝙎𝘼𝙉 \n"
+        ">> 𝙋𝙀𝙉𝙂𝙄𝙍𝙄𝙈𝘼𝙉 𝙋𝙀𝙎𝘼𝙉 \n"
         "**Memulai pengiriman pesan otomatis** -> `.start`\n"
         "Memulai pengiriman pesan otomatis ke grup yang ada di daftar grup.",
 
